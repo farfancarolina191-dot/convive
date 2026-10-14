@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sostenibilidad y Uso Responsable de las TIC</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- QRCode Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.85);
+        }
+        .tab-content {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased selection:bg-emerald-500 selection:text-white transition-colors duration-300">
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-slate-200/80 dark:border-slate-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo / Title -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('inicio')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+                    <i data-lucide="leaf" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-lg bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">EcoTIC 2026</span>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Sostenibilidad Digital</p>
+                </div>
+            </div>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden xl:flex items-center space-x-1">
+                <button onclick="switchTab('inicio')" id="nav-inicio" class="nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition-all text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 dark:text-emerald-400">Inicio</button>
+                <button onclick="switchTab('huella')" id="nav-huella" class="nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-900">Huella Digital</button>
+                <button onclick="switchTab('bienestar')" id="nav-bienestar" class="nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-900">Ciberconvivencia</button>
+                <button onclick="switchTab('reciclaje')" id="nav-reciclaje" class="nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-900">Reciclaje & Ecodiseño</button>
+                <button onclick="switchTab('curiosidades')" id="nav-curiosidades" class="nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-900">Datos Curiosos</button>
+                <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-900">Quiz Aleatorio</button>
+                <button onclick="switchTab('qr')" id="nav-qr" class="nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-900 flex items-center gap-1"><i data-lucide="qr-code" class="w-3.5 h-3.5"></i> QR</button>
+            </nav>
+
+            <!-- Controls: Dark Mode & Mobile Menu -->
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleDarkMode()" id="dark-mode-btn" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" title="Cambiar tema">
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                </button>
+                <button id="mobile-menu-btn" class="xl:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobile-menu" class="hidden xl:hidden px-4 pt-2 pb-4 space-y-1.5 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-xl">
+            <button onclick="switchTab('inicio'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50">Inicio</button>
+            <button onclick="switchTab('huella'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Huella Digital</button>
+            <button onclick="switchTab('bienestar'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Ciberconvivencia</button>
+            <button onclick="switchTab('reciclaje'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Reciclaje & Ecodiseño</button>
+            <button onclick="switchTab('curiosidades'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Datos Curiosos</button>
+            <button onclick="switchTab('quiz'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Quiz Aleatorio</button>
+            <button onclick="switchTab('qr'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"><i data-lucide="qr-code" class="w-4 h-4"></i> Código QR</button>
+        </div>
+    </header>
+
+    <!-- Main Application Container -->
+    <main class="pt-28 pb-16 min-h-screen">
+
+        <!-- ================= SECTION: INICIO ================= -->
+        <section id="content-inicio" class="tab-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 text-white p-8 sm:p-12 lg:p-16 shadow-2xl">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-6">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Presentación Digital Interactiva 2026
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+                        Tecnología Sostenible y <span class="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Convivencia Digital</span>
+                    </h1>
+                    <p class="text-lg sm:text-xl text-slate-300 mb-8 leading-relaxed">
+                        Descubre cómo nuestras acciones cotidianas en internet impactan el medio ambiente, aprende sobre ciberconvivencia y pon a prueba tus conocimientos con nuestro quiz dinámico.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="switchTab('quiz')" class="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg shadow-emerald-500/30 transition-all flex items-center gap-2">
+                            <i data-lucide="help-circle" class="w-4 h-4"></i> Jugar Quiz Aleatorio
+                        </button>
+                        <button onclick="switchTab('curiosidades')" class="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold border border-white/20 backdrop-blur transition-all flex items-center gap-2">
+                            <i data-lucide="lightbulb" class="w-4 h-4"></i> Datos Curiosos
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Navigation Cards Grid -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div onclick="switchTab('huella')" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 shadow-sm hover:shadow-xl transition-all cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="cloud" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Huella de Carbono Digital</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Calcula tu impacto mensual con nuestro estimador interactivo de streaming y correos.</p>
+                </div>
+
+                <div onclick="switchTab('bienestar')" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 shadow-sm hover:shadow-xl transition-all cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="users" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Ciberconvivencia</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Fomenta el respeto, la empatía digital y el bienestar frente al uso excesivo de pantallas.</p>
+                </div>
+
+                <div onclick="switchTab('reciclaje')" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 shadow-sm hover:shadow-xl transition-all cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Reciclaje & Ecodiseño</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Descubre qué hacer con los residuos electrónicos (RAEE) y cómo optimizar el software.</p>
+                </div>
+
+                <div onclick="switchTab('curiosidades')" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 shadow-sm hover:shadow-xl transition-all cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Datos Curiosos TIC</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Explora hechos sorprendentes y poco conocidos sobre el funcionamiento de internet y la energía.</p>
+                </div>
+
+                <div onclick="switchTab('quiz')" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 shadow-sm hover:shadow-xl transition-all cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="brain" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Quiz Aleatorio</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Pon a prueba tu aprendizaje con preguntas dinámicas que cambian en cada intento.</p>
+                </div>
+
+                <div onclick="switchTab('qr')" class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 shadow-sm hover:shadow-xl transition-all cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="qr-code" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Código QR Interactivo</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Genera y personaliza tu código QR para compartir este sitio web con tus compañeros.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: HUELLA DE CARBONO DIGITAL ================= -->
+        <section id="content-huella" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-10 text-center">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 mb-3">
+                        <i data-lucide="cloud" class="w-3.5 h-3.5"></i> Sección 01
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Huella de Carbono Digital</h2>
+                    <p class="text-slate-600 dark:text-slate-400 mt-2">El costo energético y ambiental de internet, centros de datos y dispositivos.</p>
+                </div>
+
+                <div class="space-y-8">
+                    <!-- Main Card -->
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <i data-lucide="globe" class="w-6 h-6 text-emerald-600"></i> ¿Por qué internet contamina?
+                        </h3>
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                            Cada gigabyte transferido en la red requiere electricidad para alimentar enrutadores, servidores de streaming y sistemas de refrigeración masivos en los centros de datos. Gran parte de esta energía proviene de combustibles fósiles.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                            <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900 text-center">
+                                <span class="block text-2xl font-extrabold text-emerald-700 dark:text-emerald-400 mb-1">4%</span>
+                                <span class="text-xs text-slate-600 dark:text-slate-400">Emisiones mundiales generadas por las TIC.</span>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900 text-center">
+                                <span class="block text-2xl font-extrabold text-teal-700 dark:text-teal-400 mb-1">4g CO₂</span>
+                                <span class="text-xs text-slate-600 dark:text-slate-400">Promedio de emisiones por cada correo electrónico simple.</span>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-900 text-center">
+                                <span class="block text-2xl font-extrabold text-cyan-700 dark:text-cyan-400 mb-1">3.5g</span>
+                                <span class="text-xs text-slate-600 dark:text-slate-400">De CO₂ por cada búsqueda web realizada en motores globales.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Carbon Calculator -->
+                    <div class="bg-gradient-to-br from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i data-lucide="activity" class="w-6 h-6 text-emerald-400"></i> Estimador Rápido de Impacto Digital
+                        </h3>
+                        <p class="text-slate-300 text-sm mb-6">Mide de forma aproximada el impacto mensual de tus hábitos:</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Horas de Streaming / Video al día:</label>
+                                <input type="range" id="calc-streaming" min="0" max="8" value="2" class="w-full accent-emerald-500 cursor-pointer" oninput="updateCarbonEstimation()">
+                                <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                    <span>0h</span><span>4h</span><span>8h (Alto)</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Correos electrónicos enviados al día:</label>
+                                <input type="range" id="calc-emails" min="5" max="100" value="25" class="w-full accent-emerald-500 cursor-pointer" oninput="updateCarbonEstimation()">
+                                <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                    <span>5</span><span>50</span><span>100+</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 p-6 rounded-2xl bg-white/10 backdrop-blur border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs text-slate-300 uppercase tracking-wider font-semibold">Impacto Estimado Mensual</span>
+                                <div class="text-2xl sm:text-3xl font-black text-emerald-400 mt-1" id="carbon-result">14.5 kg CO₂</div>
+                            </div>
+                            <div class="text-right text-xs text-slate-300 max-w-xs">
+                                Equivalente aproximado a recorrer <span id="km-result" class="font-bold text-white">60 km</span> en un automóvil convencional.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: CIBERCONVIVENCIA ================= -->
+        <section id="content-bienestar" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-10 text-center">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300 mb-3">
+                        <i data-lucide="users" class="w-3.5 h-3.5"></i> Sección 02
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Ciberconvivencia y Bienestar Digital</h2>
+                    <p class="text-slate-600 dark:text-slate-400 mt-2">Construyendo relaciones respetuosas, seguras y empáticas en línea.</p>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-teal-600"></i> Pilares de la Convivencia Virtual
+                        </h3>
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+                            La ciberconvivencia abarca el respeto por la privacidad ajena, la prevención del ciberacoso (cyberbullying), el uso adecuado de contraseñas y el equilibrio en el tiempo de conexión frente a las pantallas.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-5 rounded-2xl bg-teal-50/50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900">
+                                <h4 class="font-bold text-teal-900 dark:text-teal-300 mb-2 flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4 text-teal-600"></i> Empatía Activa</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400">Recordar que detrás de cada usuario hay una persona real. Evita insultos o difusiones de información falsa.</p>
+                            </div>
+                            <div class="p-5 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900">
+                                <h4 class="font-bold text-emerald-900 dark:text-emerald-300 mb-2 flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4 text-emerald-600"></i> Ciberseguridad</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400">No compartas datos personales sensibles, ubicación o claves con desconocidos en redes y videojuegos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: RECICLAJE Y ECODISEÑO ================= -->
+        <section id="content-reciclaje" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-10 text-center">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 mb-3">
+                        <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Sección 03
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Reciclaje Electrónico y Ecodiseño Web</h2>
+                    <p class="text-slate-600 dark:text-slate-400 mt-2">Gestión de RAEE y optimización energética de software.</p>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                            <i data-lucide="trash-2" class="w-6 h-6 text-cyan-600"></i> ¿Qué son los RAEE?
+                        </h3>
+                        <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                            Los Residuos de Aparatos Eléctricos y Electrónicos contienen metales pesados altamente contaminantes (plomo, mercurio) y valiosos (oro, litio). Deben llevarse siempre a puntos limpios autorizados.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-cyan-50/60 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-900 flex flex-col sm:flex-row items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-cyan-600 text-white flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="recycle" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-cyan-900 dark:text-cyan-300 mb-1">Puntos de Acopio Especializado</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400">Reciclar tus equipos evita la extracción minera masiva y protege los mantos acuíferos locales.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: DATOS CURIOSOS ================= -->
+        <section id="content-curiosidades" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-10 text-center">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 mb-3">
+                        <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i> Sección 04
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Datos Curiosos e Impactantes sobre las TIC</h2>
+                    <p class="text-slate-600 dark:text-slate-400 mt-2">Hechos sorprendentes sobre el funcionamiento y consumo de internet.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Curiosidad 1 -->
+                    <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4">
+                                <i data-lucide="server" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">El peso físico de internet</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Se ha calculado que toda la información digital almacenada en el mundo pesa aproximadamente lo mismo que una fresa (unos 50 gramos), debido a los electrones en movimiento dentro de los discos de estado sólido.
+                            </p>
+                        </div>
+                        <span class="mt-6 text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Dato #1</span>
+                    </div>
+
+                    <!-- Curiosidad 2 -->
+                    <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
+                                <i data-lucide="video" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">El streaming y el CO₂</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Ver videos en alta definición (4K) representa más del 60% del tráfico mundial de internet y genera tantas emisiones de carbono al año como un país mediano entero.
+                            </p>
+                        </div>
+                        <span class="mt-6 text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Dato #2</span>
+                    </div>
+
+                    <!-- Curiosidad 3 -->
+                    <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-4">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">El correo "Gracias"</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Si cada adulto en el Reino Unido enviara un correo electrónico menos de agradecimiento al año, se ahorrarían más de 16,400 toneladas de CO₂, equivalentes a quitar 3,300 autos de las calles.
+                            </p>
+                        </div>
+                        <span class="mt-6 text-xs font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider">Dato #3</span>
+                    </div>
+
+                    <!-- Curiosidad 4 -->
+                    <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-4">
+                                <i data-lucide="battery-charging" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Cargadores en Standby</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Dejar los cargadores enchufados a la pared sin el teléfono conectado sigue consumiendo energía fantasma (hasta un 10% de su capacidad total), recalentando circuitos y desperdiciando electricidad.
+                            </p>
+                        </div>
+                        <span class="mt-6 text-xs font-semibold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Dato #4</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: QUIZ ALEATORIO ================= -->
+        <section id="content-quiz" class="tab-content hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="mb-10 text-center">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 mb-3">
+                    <i data-lucide="brain" class="w-3.5 h-3.5"></i> Sección Interactiva Dinámica
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Quiz Aleatorio sobre Sostenibilidad y TIC</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-2">Pon a prueba tus conocimientos. Las preguntas cambian y se barajan cada vez que inicias o reinicias el quiz.</p>
+            </div>
+
+            <!-- Quiz Container Card -->
+            <div id="quiz-card" class="bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl">
+                <!-- Start Screen -->
+                <div id="quiz-start-screen" class="text-center py-8">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="play-circle" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">¿Listo para el desafío?</h3>
+                    <p class="text-slate-600 dark:text-slate-400 max-w-md mx-auto mb-8 text-sm leading-relaxed">
+                        Evaluaremos tus conocimientos sobre huella digital, ciberconvivencia y ecodiseño con preguntas seleccionadas al azar de nuestro banco de datos.
+                    </p>
+                    <button onclick="startQuiz()" class="px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 mx-auto">
+                        <i data-lucide="zap" class="w-5 h-5"></i> Comenzar Quiz Ahora
+                    </button>
+                </div>
+
+                <!-- Active Quiz Screen -->
+                <div id="quiz-active-screen" class="hidden">
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+                        <span id="quiz-progress-text" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Pregunta 1 de 5</span>
+                        <span id="quiz-score-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Puntaje: 0</span>
+                    </div>
+
+                    <h3 id="quiz-question-title" class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-6"></h3>
+
+                    <div id="quiz-options-container" class="space-y-3 mb-8">
+                        <!-- Options injected via JS -->
+                    </div>
+
+                    <div id="quiz-feedback-box" class="hidden mb-6 p-4 rounded-2xl text-sm font-medium"></div>
+
+                    <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden w-full py-3.5 rounded-xl bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-700 text-white font-bold transition-all flex items-center justify-center gap-2">
+                        Siguiente Pregunta <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Results Screen -->
+                <div id="quiz-results-screen" class="hidden text-center py-6">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="award" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">¡Quiz Completado!</h3>
+                    <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm">Has demostrado tu conocimiento sobre sostenibilidad digital y uso responsable de las TIC.</p>
+                    
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 max-w-xs mx-auto mb-8">
+                        <span class="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Puntaje Final</span>
+                        <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-1" id="quiz-final-score">0 / 5</div>
+                    </div>
+
+                    <button onclick="startQuiz()" class="px-8 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 mx-auto">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Jugar de Nuevo (Nuevas Preguntas)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: CÓDIGO QR ================= -->
+        <section id="content-qr" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-10 text-center">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 mb-3">
+                        <i data-lucide="qr-code" class="w-3.5 h-3.5"></i> Sección Interactiva
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Generador y Acceso a Código QR</h2>
+                    <p class="text-slate-600 dark:text-slate-400 mt-2">Genera instantáneamente tu código QR personalizado para compartir este sitio web.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <!-- Controls -->
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Enlace o Texto para el QR:</label>
+                            <input type="text" id="qr-input" value="https://sostenibilidad-tic.edu.ec" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Color del Código:</label>
+                                <input type="color" id="qr-color" value="#059669" class="w-full h-11 p-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Color de Fondo:</label>
+                                <input type="color" id="qr-bg" value="#ffffff" class="w-full h-11 p-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <button onclick="generateQRCode()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Actualizar Código QR
+                        </button>
+                    </div>
+
+                    <!-- Display -->
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center">
+                        <div class="p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6 flex items-center justify-center">
+                            <div id="qrcode" class="flex items-center justify-center"></div>
+                        </div>
+                        <h4 class="font-bold text-slate-900 dark:text-white mb-1">¡Listo para Escanear!</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-6 max-w-xs">Usa la cámara de tu smartphone para abrir esta presentación digital.</p>
+                        
+                        <button onclick="downloadQR()" class="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all flex items-center gap-2">
+                            <i data-lucide="download" class="w-4 h-4"></i> Descargar Imagen QR
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-white">
+                    <i data-lucide="leaf" class="w-4 h-4"></i>
+                </div>
+                <span class="font-bold text-white text-base">EcoTIC 2026</span>
+            </div>
+            <p class="text-xs text-center sm:text-left">
+                Presentación digital interactiva • Uso responsable de las TIC y Sostenibilidad Digital.
+            </p>
+            <div class="flex space-x-4 text-sm">
+                <button onclick="switchTab('inicio')" class="hover:text-emerald-400 transition-colors">Inicio</button>
+                <button onclick="switchTab('quiz')" class="hover:text-emerald-400 transition-colors">Quiz</button>
+                <button onclick="switchTab('qr')" class="hover:text-emerald-400 transition-colors">Código QR</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Initialize Lucide icons on load
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initQRCode();
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const tabs = ['inicio', 'huella', 'bienestar', 'reciclaje', 'curiosidades', 'quiz', 'qr'];
+            
+            tabs.forEach(t => {
+                const content = document.getElementById(`content-${t}`);
+                const btn = document.getElementById(`nav-${t}`);
+                
+                if (t === tabId) {
+                    if (content) content.classList.remove('hidden');
+                    if (btn) {
+                        btn.className = "nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition-all text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 dark:text-emerald-400";
+                    }
+                } else {
+                    if (content) content.classList.add('hidden');
+                    if (btn) {
+                        btn.className = "nav-btn px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-900";
+                    }
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.add('hidden');
+        }
+
+        // Dark Mode Toggle Logic
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Carbon Footprint Estimator Logic
+        function updateCarbonEstimation() {
+            const streamingHours = parseFloat(document.getElementById('calc-streaming').value);
+            const emailsCount = parseInt(document.getElementById('calc-emails').value);
+            
+            const monthlyCO2 = (streamingHours * 50 * 30 + emailsCount * 4 * 30) / 1000;
+            const kmEquivalent = Math.round(monthlyCO2 * 4.2);
+
+            document.getElementById('carbon-result').innerText = monthlyCO2.toFixed(1) + ' kg CO₂';
+            document.getElementById('km-result').innerText = kmEquivalent + ' km';
+        }
+
+        // ----------------------------------------------------
+        // RANDOM QUIZ ENGINE (Bank of Questions + Shuffle)
+        // ----------------------------------------------------
+        const questionBank = [
+            {
+                q: "¿Qué porcentaje aproximado de las emisiones globales de gases de efecto invernadero generan las TIC?",
+                options: ["Menos del 0.5%", "Alrededor del 4%", "Exactamente el 25%", "Más del 50%"],
+                answer: 1,
+                explanation: "Correcto. Las TIC generan aproximadamente el 4% de las emisiones globales de GEI, superando a la aviación civil."
+            },
+            {
+                q: "¿Qué son los RAEE?",
+                options: ["Redes de Alta Eficiencia Energética", "Residuos de Aparatos Eléctricos y Electrónicos", "Registros Académicos Estudiantiles en E-learning", "Reproductores de Audio y Emisión Electrónica"],
+                answer: 1,
+                explanation: "Correcto. RAEE significa Residuos de Aparatos Eléctricos y Electrónicos y requieren gestión de reciclaje especial."
+            },
+            {
+                q: "¿Cuál es una buena práctica para reducir la huella digital en streaming?",
+                options: ["Ver siempre los videos en resolución 4K aunque la pantalla sea pequeña", "Reducir la resolución de video cuando no sea estrictamente necesario", "Dejar reproduciendo videos en bucle durante la noche", "Desactivar el Wi-Fi y usar datos móviles siempre"],
+                answer: 1,
+                explanation: "Correcto. En pantallas pequeñas el ojo humano apenas nota diferencia entre 720p y 4K, pero el ahorro de energía en servidores es enorme."
+            },
+            {
+                q: "¿Qué significa el término 'FOMO' en el contexto del bienestar digital?",
+                options: ["Falla Orgánica por Monitoreo Online", "Miedo a perderse de algo o quedarse fuera de las tendencias digitales", "Formato de Optimización Multimedia y Ocio", "Filtro Obligatorio de Mensajes Ofensivos"],
+                answer: 1,
+                explanation: "Correcto. FOMO (Fear Of Missing Out) describe la ansiedad generada por estar constantemente conectado por temor a perderse de algo."
+            },
+            {
+                q: "¿Qué es el ecodiseño web?",
+                options: ["Diseñar páginas con colores exclusivamente verdes", "Crear sitios optimizados que requieran menos transferencia de datos y energía", "Hacer webs que funcionen únicamente con energía solar", "Diseñar videojuegos sobre ecología"],
+                answer: 1,
+                explanation: "Correcto. El ecodiseño web busca minimizar el peso de los sitios y acelerar su carga para gastar menos energía en servidores y dispositivos."
+            },
+            {
+                q: "¿Por qué se recomienda apagar completamente los dispositivos electrónicos en lugar de dejarlos en modo standby?",
+                options: ["Porque consumen energía fantasma y recalientan circuitos", "Porque se borra el disco duro automáticamente", "Porque las baterías explotan si no se apagan", "No hay ninguna diferencia en el consumo"],
+                answer: 0,
+                explanation: "Correcto. Los cargadores y equipos en standby siguen consumiendo electricidad de forma silenciosa."
+            },
+            {
+                q: "¿Cuál es una medida clave de ciberconvivencia ante un caso de ciberacoso?",
+                options: ["Responder con insultos peores", "Ignorar y borrar las pruebas", "Guardar evidencias (capturas) y reportar con adultos o autoridades", "Publicar los datos personales del acosador"],
+                answer: 2,
+                explanation: "Correcto. Guardar evidencias y reportar ante un adulto de confianza o tutor es el paso seguro para detener el ciberacoso."
+            }
+        ];
+
+        let activeQuizQuestions = [];
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let userHasAnswered = false;
+
+        function startQuiz() {
+            // Shuffle question bank randomly and pick 5 questions
+            const shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+            activeQuizQuestions = shuffled.slice(0, 5);
+            currentQuizIndex = 0;
+            quizScore = 0;
+
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-results-screen').classList.add('hidden');
+            document.getElementById('quiz-active-screen').classList.remove('hidden');
+
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            userHasAnswered = false;
+            const qData = activeQuizQuestions[currentQuizIndex];
+
+            document.getElementById('quiz-progress-text').innerText = `Pregunta ${currentQuizIndex + 1} de ${activeQuizQuestions.length}`;
+            document.getElementById('quiz-score-badge').innerText = `Puntaje: ${quizScore}`;
+            document.getElementById('quiz-question-title').innerText = qData.q;
+
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-sm font-medium transition-all flex items-center justify-between";
+                btn.innerHTML = `<span>${opt}</span> <span class="w-6 h-6 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-400">${String.fromCharCode(65 + idx)}</span>`;
+                btn.onclick = () => selectQuizOption(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('quiz-feedback-box').classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+        }
+
+        function selectQuizOption(selectedIdx, btnElement) {
+            if (userHasAnswered) return;
+            userHasAnswered = true;
+
+            const qData = activeQuizQuestions[currentQuizIndex];
+            const options = document.getElementById('quiz-options-container').children;
+
+            for (let i = 0; i < options.length; i++) {
+                options[i].disabled = true;
+                if (i === qData.answer) {
+                    options[i].className = "w-full text-left p-4 rounded-2xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 text-sm font-semibold flex items-center justify-between";
+                } else if (i === selectedIdx) {
+                    options[i].className = "w-full text-left p-4 rounded-2xl border border-rose-500 bg-rose-50 dark:bg-rose-950/60 text-rose-900 dark:text-rose-200 text-sm font-semibold flex items-center justify-between";
+                } else {
+                    options[i].className = "w-full text-left p-4 rounded-2xl border border-slate-200 dark:border-slate-800 opacity-50 text-slate-500 text-sm font-medium flex items-center justify-between";
+                }
+            }
+
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            feedbackBox.classList.remove('hidden');
+
+            if (selectedIdx === qData.answer) {
+                quizScore++;
+                feedbackBox.className = "mb-6 p-4 rounded-2xl text-sm font-medium bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200";
+                feedbackBox.innerHTML = `<strong>¡Respuesta correcta!</strong> ${qData.explanation}`;
+            } else {
+                feedbackBox.className = "mb-6 p-4 rounded-2xl text-sm font-medium bg-rose-50 dark:bg-rose-950/80 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200";
+                feedbackBox.innerHTML = `<strong>Respuesta incorrecta.</strong> ${qData.explanation}`;
+            }
+
+            document.getElementById('quiz-score-badge').innerText = `Puntaje: ${quizScore}`;
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < activeQuizQuestions.length) {
+                renderQuizQuestion();
+            } else {
+                // Show Results Screen
+                document.getElementById('quiz-active-screen').classList.add('hidden');
+                document.getElementById('quiz-results-screen').classList.remove('hidden');
+                document.getElementById('quiz-final-score').innerText = `${quizScore} / ${activeQuizQuestions.length}`;
+            }
+        }
+
+        // QR Code Generator Implementation
+        let qrInstance = null;
+
+        function initQRCode() {
+            const container = document.getElementById('qrcode');
+            container.innerHTML = '';
+            const text = document.getElementById('qr-input').value;
+            const fgColor = document.getElementById('qr-color').value;
+            const bgColor = document.getElementById('qr-bg').value;
+
+            qrInstance = new QRCode(container, {
+                text: text,
+                width: 180,
+                height: 180,
+                colorDark: fgColor,
+                colorLight: bgColor,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function generateQRCode() {
+            initQRCode();
+        }
+
+        function downloadQR() {
+            const img = document.querySelector('#qrcode img') || document.querySelector('#qrcode canvas');
+            if (!img) return;
+            
+            let imageUrl = '';
+            if (img.tagName === 'CANVAS') {
+                imageUrl = img.toDataURL('image/png');
+            } else {
+                imageUrl = img.src;
+            }
+
+            const downloadLink = document.createElement('a');
+            downloadLink.href = imageUrl;
+            downloadLink.download = 'codigo-qr-sostenibilidad-tic.png';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+    </script>
+</body>
+</html>
